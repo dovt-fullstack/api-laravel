@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use OpenApi\Annotations as OA;
+use Illuminate\Support\Facades\Auth; // Import Auth
 
 class UserController extends Controller
 {
@@ -69,5 +70,22 @@ class UserController extends Controller
         $user->save();
 
         return response()->json(['message' => 'User role updated successfully']);
+    }
+    public function updateProfile(Request $request, $id) {
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|string|email|unique:users,email,' . $id,
+        ]);
+
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->save();
+
+        return response()->json(['message' => 'Profile updated successfully'], 200);
     }
 }
