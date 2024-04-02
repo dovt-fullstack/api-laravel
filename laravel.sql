@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Máy chủ: localhost
--- Thời gian đã tạo: Th3 31, 2024 lúc 04:31 PM
--- Phiên bản máy phục vụ: 10.4.28-MariaDB
--- Phiên bản PHP: 8.0.28
+-- Máy chủ: 127.0.0.1
+-- Thời gian đã tạo: Th4 02, 2024 lúc 10:56 AM
+-- Phiên bản máy phục vụ: 10.4.32-MariaDB
+-- Phiên bản PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -64,7 +64,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (8, '2019_08_19_000000_create_failed_jobs_table', 1),
 (9, '2019_12_14_000001_create_personal_access_tokens_table', 1),
 (10, '2022_07_13_122221_create_products_table', 1),
-(11, '2024_03_30_072925_add_role_to_users_table', 2);
+(11, '2024_03_30_072925_add_role_to_users_table', 2),
+(12, '2024_04_02_081242_create_questions_table', 3);
 
 -- --------------------------------------------------------
 
@@ -89,10 +90,13 @@ CREATE TABLE `oauth_access_tokens` (
 --
 
 INSERT INTO `oauth_access_tokens` (`id`, `user_id`, `client_id`, `name`, `scopes`, `revoked`, `created_at`, `updated_at`, `expires_at`) VALUES
+('078e42d836f4a81f05de5e74d23d31d165a05137014c2c45218717998d4dce601cc29a8741f199c5', 3, 1, 'authToken', '[]', 0, '2024-04-02 01:18:38', '2024-04-02 01:18:38', '2025-04-02 08:18:38'),
 ('088a78fb4eb668c59f3378a9f3283379b64ac94a887bfab9ae89cbe1f3609bb3b33141f3e7eec3d7', 4, 1, 'authToken', '[]', 0, '2024-03-30 00:13:39', '2024-03-30 00:13:39', '2025-03-30 07:13:39'),
 ('3a7a6895790a3b7cd6a447e3ebb08a81a73c9a24fd94dcc9bcd6d0828f9e54f2fbe6ac9136ab71e4', 4, 1, 'authToken', '[]', 0, '2024-03-30 00:13:42', '2024-03-30 00:13:42', '2025-03-30 07:13:42'),
 ('466c03592af18a7c86302d7919c22a8927e0d2255f9f3d7273bdf72af44e4c35c473fd6a02a6f260', 3, 1, 'authToken', '[]', 0, '2024-03-30 00:55:00', '2024-03-30 00:55:00', '2025-03-30 07:55:00'),
 ('52c23752bc2ffb70e6625b67a82a85e050db0260bfb1f40d78af96e609b7293c72ba0ede5025bc9a', 4, 1, 'authToken', '[]', 0, '2024-03-30 00:13:36', '2024-03-30 00:13:36', '2025-03-30 07:13:36'),
+('59ec98298af97d360dfb1b2f89a6f240c5868be11f02f831bd5232d74c9c13235be0ea6256662f5c', 1, 1, 'authToken', '[]', 0, '2024-04-02 01:19:05', '2024-04-02 01:19:05', '2025-04-02 08:19:05'),
+('6c79c60d3b0247d6cf289c5b49f46e4810dcb8957354ba4348220d54edf612f38bbdc0dc40dcabcb', 3, 1, 'authToken', '[]', 0, '2024-04-02 01:07:38', '2024-04-02 01:07:38', '2025-04-02 08:07:38'),
 ('7fd32724d797f5fbbb71611e6da834c0806d284f55b827b63809c2a6bf63c512ea4d75c7b9ecab98', 4, 1, 'authToken', '[]', 0, '2024-03-30 00:13:41', '2024-03-30 00:13:41', '2025-03-30 07:13:41'),
 ('8a3ffdda5e3cab5bd65b91896466091ec4bcef43f3bcc9106df3fa05f845fa79b06521583b5070f6', 5, 1, 'authToken', '[]', 0, '2024-03-30 00:15:52', '2024-03-30 00:15:52', '2025-03-30 07:15:52'),
 ('8d591d21d34ef02838c0bd36097942fa1d4fd98af8c58371c018c1b9d40ce84dd8207eaa8534d94c', 3, 1, 'authToken', '[]', 0, '2024-03-30 00:56:54', '2024-03-30 00:56:54', '2025-03-30 07:56:54'),
@@ -223,6 +227,31 @@ CREATE TABLE `products` (
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `questions`
+--
+
+CREATE TABLE `questions` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `question` varchar(255) NOT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `options` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`options`)),
+  `answer` varchar(255) NOT NULL,
+  `point` int(11) NOT NULL,
+  `choose` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`choose`)),
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `questions`
+--
+
+INSERT INTO `questions` (`id`, `question`, `image`, `options`, `answer`, `point`, `choose`, `created_at`, `updated_at`) VALUES
+(2, '1 + 22', 'image2.png', '\"mutl2\"', 'B2', 12, '[{\"q\":\"22\"},{\"q\":\"22\"},{\"q\":\"22\"},{\"q\":\"22\"}]', '2024-04-02 01:25:25', '2024-04-02 01:33:41');
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `users`
 --
 
@@ -244,7 +273,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `role`, `remember_token`, `created_at`, `updated_at`) VALUES
 (1, 'Thanhdo', 'Thanhdo@example.com', NULL, '$2y$10$c7qzYRf9JTdw6kFOKcQtLugVKT7pTkBEOWv.YBhSPB.Mvokm33EQ.', 'admin', NULL, '2024-03-29 21:24:46', '2024-03-30 00:48:01'),
-(2, 'Jhon Doe', 'jhon@example.com', NULL, '$2y$10$FOg01WvSLsWUlYjalJIwj.O8YyBJ7mgopRQxPv2rgZel0Pdr10eJK', 'user', NULL, '2024-03-29 21:25:03', '2024-03-29 21:25:03'),
+(2, 'do do 22', 'do@gmail.com', NULL, '$2y$10$FOg01WvSLsWUlYjalJIwj.O8YyBJ7mgopRQxPv2rgZel0Pdr10eJK', 'user', NULL, '2024-03-29 21:25:03', '2024-04-02 01:50:28'),
 (3, 'TDI invest', 'thanhdo9xi@gmail.com', NULL, '$2y$10$SdATkXGpPOzMahFc2omOt.HMU01AbOH/N1eR1l5Mck1ToERYXLABG', 'user', NULL, '2024-03-29 21:29:54', '2024-03-29 21:29:54'),
 (4, 'TDI invest9', 'thanhdo99xi@gmail.com', '2024-03-07 07:03:59', '$2y$10$3mFncjFVpmPoPLVRz56koOR3Z5lqswn5g1f4EaaHR1XlA2KoahxZi', 'user', '1', '2024-03-29 23:58:05', '2024-03-29 23:58:05'),
 (5, 'dat2dt2da2da2', 'datmuden2@gmail.com', NULL, '$2y$10$lqhh3py0q1cEYFa/3/OHQucTqzySBzJN/mBDVMhU4NX2nUdgyUPHS', 'user', NULL, '2024-03-30 00:15:52', '2024-03-30 01:00:07');
@@ -323,6 +352,12 @@ ALTER TABLE `products`
   ADD KEY `products_user_id_foreign` (`user_id`);
 
 --
+-- Chỉ mục cho bảng `questions`
+--
+ALTER TABLE `questions`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Chỉ mục cho bảng `users`
 --
 ALTER TABLE `users`
@@ -343,7 +378,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT cho bảng `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT cho bảng `oauth_clients`
@@ -368,6 +403,12 @@ ALTER TABLE `personal_access_tokens`
 --
 ALTER TABLE `products`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `questions`
+--
+ALTER TABLE `questions`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT cho bảng `users`
