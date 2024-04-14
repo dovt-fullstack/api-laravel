@@ -23,12 +23,18 @@ use App\Http\Middleware\VerifyTokenMiddleware;
 
 Route::post('login', [LoginController::class, 'login']);
 Route::post('register', [RegisterController::class, 'register']);
+Route::get('/get-all/questions', [QuestionController::class, 'getAllQuestion']);
+Route::post('/choose-question/{id}', [QuestionController::class, 'checkUserChoose']);
+Route::get('/get-all-question-used-user/{id}', [QuestionController::class, 'getAlldetailsUserChoose']);
+Route::get('/get-id-question-used-user/{id}', [QuestionController::class, 'getIdDetailsUserChoose']);
+Route::post('update-password', [UserController::class, 'resetPassword']);
 
+Route::get('/questions/{id}', [QuestionController::class, 'getIdQuestion']);
 Route::middleware('auth:api')->group(function () {
     Route::get('profile', [ProfileController::class, 'show']);
     Route::post('logout', [ProfileController::class, 'logout']);
     Route::put('profile/update/{id}', [UserController::class, 'updateProfile']);
-    // Route::get('products', [ProductsController::class, 'index']);
+
     Route::put('/users/{id}/role', [UserController::class, 'updateRole'])->middleware(VerifyTokenMiddleware::class);
     Route::post('/create-question', [QuestionController::class, 'createQuestion'])->middleware(VerifyTokenMiddleware::class);
     Route::delete('/delete-questions/{id}', [QuestionController::class, 'deleteQuestion'])->middleware(VerifyTokenMiddleware::class);

@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Auth; // Import Auth
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -87,5 +88,29 @@ class UserController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Profile updated successfully'], 200);
+    }
+    public function resetPassword(Request $request)
+    {
+        // Validate username, email, and new password
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'new_password' => 'required|string|min:6', // Thêm validation cho mật khẩu mới
+        ]);
+        // Check if user exists
+        $user = User::where('name', $request->name)
+                    ->where('email', $request->email)
+                    ->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'Invalid name or email'], 404);
+        }
+
+        // Set new password
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        // Return success response
+        return response()->json(['message' => 'Password reset successfully'], 200);
     }
 }

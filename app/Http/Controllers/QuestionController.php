@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Question;
 use Illuminate\Http\Request;
+use App\Models\DetailsUserChoose;
 
 class QuestionController extends Controller
 {
@@ -72,5 +73,62 @@ class QuestionController extends Controller
 
         return response()->json(['message' => 'Question updated successfully'], 200);
     }
+    public function getAllQuestion()
+    {
+        // Lấy tất cả câu hỏi từ bảng questions
+        $questions = Question::all();
 
+        // Trả về danh sách câu hỏi
+        return response()->json(['questions' => $questions], 200);
+    }
+    public function getIdQuestion($id)
+    {
+        $question = Question::find($id);
+        if (!$question) {
+            return response()->json(['message' => 'Question not found'], 404);
+        }
+        return response()->json(['question' => $question], 200);
+    }
+    public function checkUserChoose(Request $request, $id)
+    {
+        $question = Question::find($id);
+        if (!$question) {
+            return response()->json(['message' => 'Question not found'], 404);
+        }
+        // Lấy idUser và câu trả lời của người dùng từ request
+        $idUser = $request->input('idUser');
+        $userChoose = $request->input('user_answer');
+        // Kiểm tra xem câu trả lời của người dùng có đúng không
+        $isCorrect = $question->answer === $userChoose;
+        // Tạo một bản ghi mới trong bảng Details_User_Choose
+        $detailsUserChoose = new DetailsUserChoose();
+        $detailsUserChoose->idUser = $idUser;
+        $detailsUserChoose->question = $question->question; // Chỉ định trường question từ câu hỏi
+        $detailsUserChoose->question_id = $question->id;
+        $detailsUserChoose->userChoose = $userChoose;
+        $detailsUserChoose->answer = $question->answer;
+        $detailsUserChoose->image = $question->image;
+        $detailsUserChoose->point = $question->point;
+        $detailsUserChoose->choose = $question->choose;
+        $detailsUserChoose->select = $isCorrect;
+        // Cập nhật trường 'is_correct' của bản ghi Details_User_Choose
+        $detailsUserChoose->save();
+        // Cập nhật trường 'select' của câu hỏi
+        // Trả về kết quả
+        return response()->json(['message' => 'User answer checked successfully', 'is_correct' => $isCorrect], 200);
+    }
+    public function getAlldetailsUserChoose(Request $request, $userId)
+    {
+        $details = DetailsUserChoose::where('idUser', $userId)->get();
+        return response()->json(['details' => $details], 200);
+    }
+    public function getIdDetailsUserChoose($id)
+    {
+        $details = DetailsUserChoose::find($id);
+
+        if (!$details) {
+            return response()->json(['message' => 'Details not found'], 404);
+        }
+        return response()->json(['details' => $details], 200);
+    }
 }
