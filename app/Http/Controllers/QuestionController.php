@@ -131,4 +131,12 @@ class QuestionController extends Controller
         }
         return response()->json(['details' => $details], 200);
     }
+      public function getIdDetailsUserChooseByIdQuestion($id)
+    {
+        $details = DetailsUserChoose::where('question_id',$id)->get();
+        if (!$details) {
+            return response()->json(['message' => 'Details not found'], 404);
+        }
+        return response()->json(['details' => $details], 200);
+    }
 }

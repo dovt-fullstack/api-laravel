@@ -22,4 +22,8 @@ class Question extends Model
         'options' => 'json',
         'choose' => 'json',
     ];
+     public function posts()
+    {
+        return $this->belongsToMany(Post::class, 'posts', 'question_id', 'post_id');
+    }
 }

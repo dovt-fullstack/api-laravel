@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\TopicController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductsController;
@@ -22,6 +24,23 @@ use App\Http\Middleware\VerifyTokenMiddleware;
 */
 // form login email , password
 Route::post('login', [LoginController::class, 'login']);
+
+
+Route::post('login', [LoginController::class, 'login']);
+
+
+Route::get('topics', [TopicController::class, 'index']);      // Hiển thị danh sách các chủ đề
+Route::get('topics/{id}', [TopicController::class, 'show']);  // Hiển thị thông tin chi tiết của một chủ đề
+Route::post('topics', [TopicController::class, 'store']);     // Tạo mới chủ đề
+Route::put('topics/{id}', [TopicController::class, 'update']);    // Cập nhật thông tin của một chủ đề
+Route::delete('topics/{id}', [TopicController::class, 'destroy']);
+
+
+Route::get('posts', [PostController::class, 'index']);      // Hiển thị danh sách các bài viết
+Route::get('posts/{id}', [PostController::class, 'show']);  // Hiển thị thông tin chi tiết của một bài viết
+Route::post('posts', [PostController::class, 'store']);     // Tạo mới bài viết
+Route::put('posts/{id}', [PostController::class, 'update']);    // Cập nhật thông tin của một bài viết
+Route::delete('posts/{id}', [PostController::class, 'destroy']);
 
 // api register
 // {
@@ -45,11 +64,12 @@ Route::post('/choose-question/{id}', [QuestionController::class, 'checkUserChoos
 Route::get('/get-all-question-used-user/{id}', [QuestionController::class, 'getAlldetailsUserChoose']);
 
 // id từ bảng Details_User_Choose
-Route::get('/get-id-question-used-user/{id}', [QuestionController::class, 'getIdDetailsUserChoose']);
+Route::get('/get-id-queget-id-question-used-user-by-id-questionstion-used-user/{id}', [QuestionController::class, 'getIdDetailsUserChoose']);
+Route::get('//{id}', [QuestionController::class, 'getIdDetailsUserChooseByIdQuestion']);
 
 //  'name' ,
-            // 'email' ,
-            // 'new_password'',
+// 'email' ,
+// 'new_password'',
 Route::post('update-password', [UserController::class, 'resetPassword']);
 
 //id question
