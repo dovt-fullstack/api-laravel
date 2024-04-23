@@ -6,12 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    protected $table = 'posts';
     protected $fillable = ['name', 'topic_id'];
 
-    // Mối quan hệ: Một bài đăng có nhiều câu hỏi
+    public function topic()
+    {
+        return $this->belongsTo(TopicPost::class);
+    }
+
     public function questions()
     {
-        return $this->belongsToMany(Question::class, 'posts', 'post_id', 'question_id');
+        return $this->hasMany(Question::class);
     }
 }
