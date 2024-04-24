@@ -36,6 +36,10 @@ Route::put('topics/{id}', [TopicController::class, 'update']);    // Cập nhậ
 Route::delete('topics/{id}', [TopicController::class, 'destroy']);
 
 
+Route::post('/posts/{postId}/add-question', [PostController::class, 'addQuestions']);
+Route::put('/posts/{postId}/remove-question', [PostController::class, 'removeQuestionId']);
+
+
 Route::get('posts', [PostController::class, 'index']);      // Hiển thị danh sách các bài viết
 Route::get('posts/{id}', [PostController::class, 'show']);  // Hiển thị thông tin chi tiết của một bài viết
 Route::post('posts', [PostController::class, 'store']);     // Tạo mới bài viết

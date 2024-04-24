@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\TopicPost;
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\Question;
 use Illuminate\Validation\ValidationException;
 
 class PostController extends Controller
 {
     // Hiển thị danh sách các bài viết
+
     public function index()
     {
         $posts = Post::all();
@@ -18,47 +20,46 @@ class PostController extends Controller
 
     // Hiển thị thông tin chi tiết của một bài viết
     public function show($id)
-    {
-        $post = Post::getPostWithDetails($id);
-
-        if (!$post) {
-            return response()->json(['message' => 'Bài viết không tồn tại'], 404);
-        }
-
-        return response()->json(['post' => $post], 200);
-    }
-
-    // Tạo mới bài viết
-public function store(Request $request)
 {
-    try {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'topic_id' => ['required', 'exists:topics,id'],
-            'question_ids' => ['required', 'array', 'exists:questions,id'],
-        ]);
+    $post = Post::getPostWithDetails($id);
 
-        $topic = TopicPost::findOrFail($request->topic_id);
-        $post = $topic->posts()->create([
-            'name' => $request->name,
-        ]);
-        $post->questions()->attach($request->question_ids);
-        $post = Post::with('topic', 'questions')->findOrFail($post->id);
-
-        // Trả về phản hồi JSON với thông tin chi tiết của bài đăng
-        return response()->json(['message' => 'Bài viết đã được tạo thành công', 'post' => $post], 201);
-
-    } catch (ValidationException $e) {
-        // Trả về phản hồi JSON với thông báo lỗi khi dữ liệu không hợp lệ
-        return response()->json(['message' => 'Dữ liệu không hợp lệ', 'errors' => $e->errors()], 422);
-
-    } catch (\Exception $e) {
-        // Trả về phản hồi JSON với thông báo lỗi nếu có lỗi không xác định
-        return response()->json(['message' => 'Đã xảy ra lỗi khi xử lý yêu cầu'], 500);
+    if (!$post) {
+        return response()->json(['message' => 'Bài viết không tồn tại'], 404);
     }
+
+    // Lấy tên của chủ đề từ relationship
+    $topicName = $post->topic->name;
+
+    // Chuyển đổi chuỗi thành mảng
+    $questionIds = $post->question_id ? json_decode($post->question_id, true) : [];
+
+    // Lấy tất cả các câu hỏi liên quan đến bài viết
+    $questions = Question::whereIn('id', $questionIds)->get();
+
+    return response()->json(['post' => $post, 'topic_name' => $topicName, 'questions' => $questions], 200);
 }
 
+    // Tạo mới bài viết
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'topic_id' => 'required|exists:topics,id',
+        ]);
 
+        $post = Post::create($validatedData);
+
+        return response()->json(['post' => $post], 201);
+    }
+
+    public function removeQuestionId(Request $request, $postId)
+    {
+        $post = Post::findOrFail($postId);
+        // Xóa question_id từ bài viết
+        $post->update(['question_id' => null]);
+
+        return response()->json(['message' => 'Xóa question_id từ bài viết thành công'], 200);
+    }
 
 
 
@@ -93,4 +94,35 @@ public function store(Request $request)
         $post->delete();
         return response()->json(['message' => 'Bài viết đã được xóa thành công'], 200);
     }
+
+    public function addQuestions(Request $request, $postId)
+    {
+        $post = Post::findOrFail($postId);
+        $questionIds = $request->input('question_ids', []);
+
+        // Kiểm tra xem question_id có tồn tại và là một mảng không
+        if ($post->question_id && is_array($post->question_id)) {
+            // Nếu đã tồn tại và là một mảng, sử dụng giá trị hiện có
+            $existingQuestionIds = $post->question_id;
+        } else {
+            // Nếu không tồn tại hoặc không phải là một mảng, gán một mảng rỗng
+            $existingQuestionIds = [];
+        }
+
+        // Thêm các question_id mới vào mảng hiện có
+        $existingQuestionIds = array_merge($existingQuestionIds, $questionIds);
+
+        // Cập nhật question_id của bài viết
+        $post->update(['question_id' => $existingQuestionIds]);
+
+        // Lấy thông tin của các câu hỏi được thêm vào bài viết
+        $questions = Question::whereIn('id', $questionIds)->get();
+
+        return response()->json([
+            'message' => 'Các ID câu hỏi đã được thêm vào bài viết thành công',
+            'post' => $post,
+            'questions' => $questions
+        ], 201);
+    }
+
 }
