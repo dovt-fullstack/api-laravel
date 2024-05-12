@@ -13,13 +13,13 @@ return new class extends Migration
      */
   public function up()
 {
-    Schema::create('posts', function (Blueprint $table) {
-        $table->id();
-        $table->string('name');
-        $table->unsignedBigInteger('topic_id');
-        $table->foreign('topic_id')->references('id')->on('topics')->onDelete('cascade');
-        $table->timestamps();
-    });
+  Schema::create('posts', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->unsignedBigInteger('topic_id');
+            $table->foreign('topic_id')->references('id')->on('topics');
+            $table->timestamps();
+        });
 }
 
     /**
