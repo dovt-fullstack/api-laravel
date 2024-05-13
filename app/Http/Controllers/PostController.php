@@ -20,24 +20,24 @@ class PostController extends Controller
 
     // Hiển thị thông tin chi tiết của một bài viết
     public function show($id)
-{
-    $post = Post::getPostWithDetails($id);
+    {
+        $post = Post::getPostWithDetails($id);
 
-    if (!$post) {
-        return response()->json(['message' => 'Bài viết không tồn tại'], 404);
+        if (!$post) {
+            return response()->json(['message' => 'Bài viết không tồn tại'], 404);
+        }
+
+        // Lấy tên của chủ đề từ relationship
+        $topicName = $post->topic->name;
+
+        // Chuyển đổi chuỗi thành mảng
+        $questionIds = $post->question_id ? json_decode($post->question_id, true) : [];
+
+        // Lấy tất cả các câu hỏi liên quan đến bài viết
+        $questions = Question::whereIn('id', $questionIds)->get();
+
+        return response()->json(['post' => $post, 'topic_name' => $topicName, 'questions' => $questions], 200);
     }
-
-    // Lấy tên của chủ đề từ relationship
-    $topicName = $post->topic->name;
-
-    // Chuyển đổi chuỗi thành mảng
-    $questionIds = $post->question_id ? json_decode($post->question_id, true) : [];
-
-    // Lấy tất cả các câu hỏi liên quan đến bài viết
-    $questions = Question::whereIn('id', $questionIds)->get();
-
-    return response()->json(['post' => $post, 'topic_name' => $topicName, 'questions' => $questions], 200);
-}
 
     // Tạo mới bài viết
     public function store(Request $request)
@@ -124,5 +124,4 @@ class PostController extends Controller
             'questions' => $questions
         ], 201);
     }
-
 }

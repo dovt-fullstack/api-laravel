@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Models\TopicPost;
 
@@ -18,10 +19,19 @@ class TopicController extends Controller
     public function show($id)
     {
         $topic = TopicPost::find($id);
+        $posts = Post::where('topic_id', $id)->get();
         if (!$topic) {
             return response()->json(['message' => 'Chủ đề không tồn tại'], 404);
         }
-        return response()->json(['topic' => $topic], 200);
+        return response()->json([
+            'topic' => [
+                'id' => $topic->id,
+                'topic_id' => $posts,
+                'name' => $topic->name,
+                'created_at' => $topic->created_at,
+                'updated_at' => $topic->updated_at,
+            ]
+        ], 200);
     }
 
     // Tạo mới chủ đề

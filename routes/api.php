@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HistoryExamsController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\QuestionController;
@@ -28,6 +29,19 @@ Route::post('login', [LoginController::class, 'login']);
 
 Route::post('login', [LoginController::class, 'login']);
 
+
+Route::post('submit-exams/{id}', [HistoryExamsController::class, 'UserChoose']);      // Hiển thị danh sách các chủ đề
+
+// getAllHistory
+
+Route::get('getAll-history', [HistoryExamsController::class, 'getAllHistory']);      // Hiển thị danh sách các chủ đề
+
+// getIdHistory
+
+Route::get('getIdHistory/{id}', [HistoryExamsController::class, 'getIdHistory']);      // Hiển thị danh sách các chủ đề
+
+// getHistoryByUser
+Route::get('getHistoryByUser/{id}', [HistoryExamsController::class, 'getHistoryByUser']);
 
 Route::get('topics', [TopicController::class, 'index']);      // Hiển thị danh sách các chủ đề
 Route::get('topics/{id}', [TopicController::class, 'show']);  // Hiển thị thông tin chi tiết của một chủ đề
