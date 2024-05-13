@@ -60,6 +60,9 @@ Route::post('posts', [PostController::class, 'store']);     // Tạo mới bài 
 Route::put('posts/{id}', [PostController::class, 'update']);    // Cập nhật thông tin của một bài viết
 Route::delete('posts/{id}', [PostController::class, 'destroy']);
 
+
+
+
 // api register
 // {
 //   "name": "Jhon Doe",
