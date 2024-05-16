@@ -20,7 +20,7 @@ return new class extends Migration
     $table->string('question');
     $table->string('question_id');
     $table->string('image')->nullable();
-    $table->json('options')->default('{}'); // Sửa đổi ở đây
+    $table->json('options'); // Sửa đổi ở đây
     $table->string('answer');
     $table->integer('point');
     $table->json('choose');
