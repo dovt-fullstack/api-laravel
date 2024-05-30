@@ -95,33 +95,19 @@ class PostController extends Controller
         return response()->json(['message' => 'Bài viết đã được xóa thành công'], 200);
     }
 
+
     public function addQuestions(Request $request, $postId)
     {
         $post = Post::findOrFail($postId);
-        $questionIds = $request->input('question_ids', []);
-
-        // Kiểm tra xem question_id có tồn tại và là một mảng không
-        if ($post->question_id && is_array($post->question_id)) {
-            // Nếu đã tồn tại và là một mảng, sử dụng giá trị hiện có
-            $existingQuestionIds = $post->question_id;
-        } else {
-            // Nếu không tồn tại hoặc không phải là một mảng, gán một mảng rỗng
-            $existingQuestionIds = [];
-        }
-
-        // Thêm các question_id mới vào mảng hiện có
-        $existingQuestionIds = array_merge($existingQuestionIds, $questionIds);
-
-        // Cập nhật question_id của bài viết
-        $post->update(['question_id' => $existingQuestionIds]);
-
-        // Lấy thông tin của các câu hỏi được thêm vào bài viết
-        $questions = Question::whereIn('id', $questionIds)->get();
-
+        $questionIds = $request->input('question_ids');
+        $post->question_id = $questionIds;
+        $post->save();
         return response()->json([
             'message' => 'Các ID câu hỏi đã được thêm vào bài viết thành công',
             'post' => $post,
-            'questions' => $questions
+            'questions' => $questionIds
         ], 201);
     }
+
+
 }
