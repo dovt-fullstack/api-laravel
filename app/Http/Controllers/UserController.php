@@ -72,6 +72,24 @@ class UserController extends Controller
 
         return response()->json(['message' => 'User role updated successfully']);
     }
+    public function getAllUsers()
+    {
+        $users = User::all();
+        // return response()->json(['message' => 'get all ok successfully']);
+        return response()->json($users, 200);
+    }
+    public function removeUser($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->delete();
+
+        return response()->json(['message' => 'User removed successfully'], 200);
+    }
     public function updateProfile(Request $request, $id) {
         $request->validate([
             'name' => 'required|string',

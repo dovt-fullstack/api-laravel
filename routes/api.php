@@ -25,7 +25,8 @@ use App\Http\Middleware\VerifyTokenMiddleware;
 */
 // form login email , password
 Route::post('login', [LoginController::class, 'login']);
-
+Route::get('/get-all-user', [UserController::class, 'getAllUsers']);
+Route::post('/remove-user/{id}', [UserController::class, 'removeUser']);
 
 Route::post('login', [LoginController::class, 'login']);
 
@@ -92,6 +93,9 @@ Route::get('//{id}', [QuestionController::class, 'getIdDetailsUserChooseByIdQues
 // 'email' ,
 // 'new_password'',
 Route::post('update-password', [UserController::class, 'resetPassword']);
+
+
+
 
 //id question
 Route::get('/questions/{id}', [QuestionController::class, 'getIdQuestion']);
