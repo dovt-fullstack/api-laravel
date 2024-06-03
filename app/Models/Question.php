@@ -16,6 +16,7 @@ class Question extends Model
         'choose',
         'answer',
         'point',
+        'newImage'
     ];
 
     protected $casts = [

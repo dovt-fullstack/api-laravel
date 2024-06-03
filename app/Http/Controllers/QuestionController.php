@@ -25,6 +25,7 @@ class QuestionController extends Controller
             'choose' => $request->choose,
             'answer' => $request->answer,
             'point' => $request->point,
+            'newImage'  => $request->newImage,
         ]);
         return response()->json(['message' => 'Question created successfully'], 201);
     }
@@ -60,6 +61,8 @@ class QuestionController extends Controller
         $question->options = $request->options;
         $question->answer = $request->answer;
         $question->point = $request->point;
+         $question->newImage  = $request->newImage;
+
 
         // Cập nhật trường choose
         $newChoose = [];

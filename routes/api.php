@@ -38,6 +38,7 @@ Route::post('submit-exams/{id}', [HistoryExamsController::class, 'UserChoose']);
 Route::get('getAll-history', [HistoryExamsController::class, 'getAllHistory']);      // Hiển thị danh sách các chủ đề
 
 // getIdHistory
+Route::get('/ranking', [HistoryExamsController::class,'rankingController']);
 
 Route::get('getIdHistory/{id}', [HistoryExamsController::class, 'getIdHistory']);      // Hiển thị danh sách các chủ đề
 

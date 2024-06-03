@@ -31,7 +31,7 @@ class PostController extends Controller
         $topicName = $post->topic->name;
 
         // Chuyển đổi chuỗi thành mảng
-        $questionIds = $post->question_id ? json_decode($post->question_id, true) : [];
+        $questionIds = $post->new_question_id ? json_decode($post->new_question_id, true) : [];
 
         // Lấy tất cả các câu hỏi liên quan đến bài viết
         $questions = Question::whereIn('id', $questionIds)->get();
@@ -100,7 +100,7 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($postId);
         $questionIds = $request->input('question_ids');
-        $post->question_id = $questionIds;
+        $post->new_question_id = $questionIds;
         $post->save();
         return response()->json([
             'message' => 'Các ID câu hỏi đã được thêm vào bài viết thành công',
